@@ -4,39 +4,31 @@ import { ToastContainer, toast } from 'react-toastify';
 const AddProdectAdmin = () => {
 
     const [title, setTitle] = useState('')
-    const [image, setImage] = useState('')
+    const [image, setImage] = useState()
     const [price, setPrice] = useState('')
+    const [productName, setProductName] = useState('')
 
     const AddProduct = (e) => {
         e.preventDefault()
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
-        var raw = JSON.stringify({
-            "title": title,
-            "date": new Date(),
-            "image": image,
-            "price": price
-        });
+        var formdata = new FormData();
+        formdata.append("productname", productName);
+        formdata.append("productprices", price);
+        formdata.append("productimage",  image);
+        formdata.append("productimagename", image.name);
+        formdata.append("producttitle", title);
 
         var requestOptions = {
             method: 'POST',
-            headers: myHeaders,
-            body: raw,
+            body: formdata,
             redirect: 'follow'
         };
 
-        fetch("http://localhost:5000/dataPhone", requestOptions)
-            .then(response => response.text())
+        fetch("http://localhost:8800/api", requestOptions)
+            .then(response => response.json())
             .then(result => {
-
-                toast.success(" Successfully Add Product!")
-                setTitle('')
-                 setImage('')
-                 setPrice('')
-
-            }
-            )
+               
+                toast.success('Add Products')
+            })
             .catch(error => console.log('error', error));
     }
 
@@ -53,6 +45,10 @@ const AddProdectAdmin = () => {
                             <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Sign in to our platform</h3>
                             <form class="space-y-6" action="#">
                                 <div>
+                                    <label for="text" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Product Name</label>
+                                    <input type="text" name="productName" onChange={(e) => setProductName(e.target.value)} id="Title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Product Name" required />
+                                </div>
+                                <div>
                                     <label for="text" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Product Title</label>
                                     <input type="text" name="title" onChange={(e) => setTitle(e.target.value)} id="Title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Product Title" required />
                                 </div>
@@ -64,7 +60,7 @@ const AddProdectAdmin = () => {
 
                                 <div>
                                     <label for="file" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Product image</label>
-                                    <input type="file" name="image" onChange={(e) => setImage(e.target.value)} id="image" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Product image" required />
+                                    <input type="file" name="productimage" onChange={(e) => setImage(e.target.files[0])} id="image" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Product image" required />
                                 </div>
 
                                 <button type="submit" onClick={(e) => AddProduct(e)} class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add Product</button>
